@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/router'
 import { api } from '@/lib/axios'
+import { AxiosError } from 'axios'
 import { Container, Form, FormError, Header } from './styles'
 
 const registerFormSchema = z.object({
@@ -48,7 +49,12 @@ export default function Register() {
         username: data.username,
       })
     } catch (err) {
-      console.log(err)
+      if (err instanceof AxiosError && err.response?.data?.message) {
+        alert(err.response.data.message)
+        return
+      }
+
+      console.error(err)
     }
   }
 
